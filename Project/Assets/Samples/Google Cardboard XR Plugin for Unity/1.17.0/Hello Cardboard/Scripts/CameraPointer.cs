@@ -58,5 +58,10 @@ public class CameraPointer : MonoBehaviour
         {
             _gazedAtObject?.SendMessage("OnPointerClick");
         }
+
+        if (Input.GetButton("Fire1"))
+        {
+            transform.parent.gameObject.transform.position = hit.point;
+        }
     }
 }
