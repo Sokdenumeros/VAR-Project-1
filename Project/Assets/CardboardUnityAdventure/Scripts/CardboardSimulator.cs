@@ -19,15 +19,13 @@ public class CardboardSimulator : MonoBehaviour
 #if UNITY_EDITOR
         if (!UseCardboardSimulator)
             return;
-        if (Input.GetMouseButton(1))
-        {
-            float mouseX = Input.GetAxis("Mouse X") * horizontalSpeed;
-            float mouseY = Input.GetAxis("Mouse Y") * verticalSpeed; 
-            rotationY += mouseX;
-            rotationX -= mouseY;
-            rotationX = Mathf.Clamp(rotationX, -45, 45);
-            cam.transform.eulerAngles = new Vector3(rotationX, rotationY, 0.0f);
-        }
+
+        float mouseX = Input.GetAxis("Mouse X") * horizontalSpeed;
+        float mouseY = Input.GetAxis("Mouse Y") * verticalSpeed;
+        rotationY += mouseX;
+        rotationX -= mouseY;
+        rotationX = Mathf.Clamp(rotationX, -45, 45);
+        cam.transform.eulerAngles = new Vector3(rotationX, rotationY, 0.0f);
 #endif
     }
 
