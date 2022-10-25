@@ -12,7 +12,12 @@ public class CardboardSimulator : MonoBehaviour
     private float rotationY = 0.0f;
     private Camera cam;
 
-    void Start() { cam = Camera.main; }
+    void Start()
+    {
+        cam = Camera.main;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
 
     void Update()
     {
