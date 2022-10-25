@@ -1,16 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.FilePathAttribute;
 
 public class CameraPointerManager : MonoBehaviour
 {
     [SerializeField] private GameObject pointer;
+    [SerializeField] private GameObject teleporter;
     [SerializeField] private float maxDistancePointer = 4.5f;
     [Range(0,1)]
     [SerializeField] private float distancePointerToObject = 0.95f;
+
+    public FadeScreen fadeScreen;
 
     private const float _maxDistance = 10f;
     private GameObject _gazedAtObject = null;
@@ -20,7 +21,7 @@ public class CameraPointerManager : MonoBehaviour
     private const string floorTag = "Floor";
     private float scaleSize = 0.025f;
     private Color pointerColor;
-    private bool readyToTeleport = true;
+    private GameObject currentPointerObj;
 
 
     private void Start()
@@ -52,42 +53,41 @@ public class CameraPointerManager : MonoBehaviour
                 pointerColor.a = 1f;
                 pointer.GetComponent<Renderer>().material.color = pointerColor;
             }
-
-            PointerOnGaze(hit.point);
-
+            
             switch (hit.transform.tag)
             {
                 case interactableTag:
+                    SwitchPointerObject(pointer);
                     GazeManager.Instance.StartGazeSelection();
                     pointer.GetComponent<Renderer>().material.color = Color.green;
                     if (Input.GetButtonDown("Fire1"))
                         hit.transform.gameObject.SendMessage("interaction", this, SendMessageOptions.DontRequireReceiver);
                     break;
                 case environmentTag:
+                    SwitchPointerObject(pointer);
                     GazeManager.Instance.CancelGazeSelection();
                     pointer.GetComponent<Renderer>().material.color = Color.white;
                     break;
                 case floorTag:
-                    pointer.GetComponent<Renderer>().material.color = Color.blue;
+                    SwitchPointerObject(teleporter);
                     GazeManager.Instance.CancelGazeSelection();
-                    if (Input.GetButtonDown("Fire1")&& readyToTeleport)
-                    {
-                        Teleport(hit.point);
-                    }
                     break;
                 default:
+                    SwitchPointerObject(pointer);
                     GazeManager.Instance.CancelGazeSelection();
                     pointer.GetComponent<Renderer>().material.color = Color.white;
                     break;
             }
+            PointerOnGaze(hit.point);
         }
         else
         {
             // No GameObject detected in front of the camera.
             _gazedAtObject?.SendMessage("OnPointerExit", null, SendMessageOptions.DontRequireReceiver);
             _gazedAtObject = null;
+            SwitchPointerObject(pointer);
             PointerOutGaze();
-            pointerColor.a = 0.5f;
+            pointerColor.a = 0.1f;
             pointer.GetComponent<Renderer>().material.color = pointerColor;
         }
 
@@ -98,27 +98,86 @@ public class CameraPointerManager : MonoBehaviour
         }
     }
 
+    private void SwitchPointerObject(GameObject pointObject)
+    {
+        if (pointObject == pointer)
+        {
+            teleporter.SetActive(false);
+            pointer.SetActive(true);
+            currentPointerObj = pointer;
+        }
+        if (pointObject == teleporter)
+        {
+            pointer.SetActive(false);
+            teleporter.SetActive(true);
+            currentPointerObj = teleporter;
+        }
+    }
+
+    IEnumerator TeleportRoutine(Vector3 location)
+    {
+        fadeScreen.FadeOut();
+        yield return new WaitForSeconds(fadeScreen.fadeDuration);
+        Teleport(location);
+        fadeScreen.FadeIn();
+    }
+
     private void Teleport(Vector3 location)
     {
         transform.parent.gameObject.transform.position = new Vector3(location.x,
                 transform.parent.gameObject.transform.position.y, location.z);
 
+        transform.parent.gameObject.transform.eulerAngles = new Vector3(transform.parent.gameObject.transform.eulerAngles.x,
+            teleporter.transform.eulerAngles.y, transform.parent.gameObject.transform.eulerAngles.z);
+
     }
 
+    private void ControlTeleportRotation()
+    {
+        float yRotation = transform.eulerAngles.y;
 
-    // Modifies pointer while gazing at Objects
+        if (Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0)
+        {
+            float joystickAngle = Mathf.Atan2(-(Input.GetAxis("Vertical")), Input.GetAxis("Horizontal")) * Mathf.Rad2Deg; ;
+            teleporter.transform.eulerAngles = new Vector3(teleporter.transform.eulerAngles.x, (yRotation + joystickAngle + 90), teleporter.transform.eulerAngles.x);
+        }
+        else
+        {
+            teleporter.transform.eulerAngles = new Vector3(teleporter.transform.eulerAngles.x, yRotation, teleporter.transform.eulerAngles.x);
+        }
+    }
+
     private void PointerOnGaze(Vector3 hitPoint)
     {
-        float scale = scaleSize * Vector3.Distance(transform.position, hitPoint);
-        pointer.transform.localScale = Vector3.one * scale;
-        pointer.transform.parent.position = CalculatePointerPosition(transform.position, hitPoint, distancePointerToObject);
+        if (currentPointerObj == pointer)
+        {
+            float scale = scaleSize * Vector3.Distance(transform.position, hitPoint);
+            pointer.transform.localScale = Vector3.one * scale;
+            pointer.transform.parent.position = CalculatePointerPosition(transform.position, hitPoint, distancePointerToObject);
+        }
+        if (currentPointerObj == teleporter)
+        {
+            teleporter.transform.position = CalculatePointerPosition(transform.position, hitPoint, 1);
+            ControlTeleportRotation();
+            if (Input.GetButtonDown("Fire1") && TeleportHandler.destinationValid)
+            {
+                StartCoroutine(TeleportRoutine(hitPoint));
+            }
+        }
     }
 
     private void PointerOutGaze()
     {
-        pointer.transform.localScale = Vector3.one * 0.1f;
-        pointer.transform.parent.transform.localPosition = new Vector3(0, 0, maxDistancePointer);
-        pointer.transform.parent.parent.transform.rotation = transform.rotation;
+        if (currentPointerObj == pointer)
+        {
+            pointer.transform.localScale = Vector3.one * 0.1f;
+            pointer.transform.parent.transform.localPosition = new Vector3(0, 0, maxDistancePointer);
+            pointer.transform.parent.parent.transform.rotation = transform.rotation;
+        }
+        if (currentPointerObj == teleporter)
+        {
+            teleporter.transform.localPosition = new Vector3(0, 0, maxDistancePointer);
+        }
     }
 
     private Vector3 CalculatePointerPosition(Vector3 p0, Vector3 p1, float t)
