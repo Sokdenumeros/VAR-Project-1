@@ -18,7 +18,6 @@ public class CameraPointerManager : MonoBehaviour
     private const string interactableTag = "Interactable";
     private const string environmentTag = "Environment";
     private const string floorTag = "Floor";
-    private const string pickUpTag = "PickUp";
     private float scaleSize = 0.025f;
     private Color pointerColor;
     private bool readyToTeleport = true;
@@ -61,10 +60,8 @@ public class CameraPointerManager : MonoBehaviour
                 case interactableTag:
                     GazeManager.Instance.StartGazeSelection();
                     pointer.GetComponent<Renderer>().material.color = Color.green;
-                    break;
-                case pickUpTag:
                     if (Input.GetButtonDown("Fire1"))
-                        hit.transform.gameObject.SendMessage("pick", this);
+                        hit.transform.gameObject.SendMessage("interaction", this, SendMessageOptions.DontRequireReceiver);
                     break;
                 case environmentTag:
                     GazeManager.Instance.CancelGazeSelection();

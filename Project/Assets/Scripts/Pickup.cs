@@ -16,29 +16,27 @@ public class Pickup : MonoBehaviour
     void Update()
     {
         if (cam != null) {
-            Vector3 position = Vector3.zero;
-
-            position = cam.transform.right.normalized * relative_pos.x + cam.transform.up.normalized * relative_pos.y + cam.transform.forward.normalized * relative_pos.z;
-
-            this.GetComponent<Rigidbody>().velocity = (position - transform.position)*10;
+            Vector3 targetposition = cam.transform.position + cam.transform.right.normalized * relative_pos.x + cam.transform.up.normalized * relative_pos.y + cam.transform.forward.normalized * relative_pos.z;
+            this.GetComponent<Rigidbody>().velocity = (targetposition - transform.position)*10;
+            //transform.position = targetposition;
             //this.GetComponent<Rigidbody>().angularVelocity = (cam.transform.parent.transform.eulerAngles - (transform.eulerAngles*3/180)) * 10;
             //transform.Translate(position-transform.position);
         }
     }
 
-    public void pick(CameraPointerManager c) {
+    public void interaction(CameraPointerManager c) {
         if (cam != null) { 
             drop(); 
             return;
         }
         cam = c;
-        Vector3 dif = transform.position - (cam.transform.position-cam.transform.parent.transform.position);
+        Vector3 dif = transform.position - cam.transform.position;
         relative_pos.x = Vector3.Dot(dif, cam.transform.right.normalized);
         relative_pos.y = Vector3.Dot(dif, cam.transform.up.normalized);
         relative_pos.z = Vector3.Dot(dif, cam.transform.forward.normalized);
     }
 
-    public void drop() {
+    private void drop() {
         cam = null;
     }
 }
