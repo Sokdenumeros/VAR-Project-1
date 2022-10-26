@@ -22,6 +22,7 @@ public class CameraPointerManager : MonoBehaviour
     private float scaleSize = 0.025f;
     private Color pointerColor;
     private GameObject currentPointerObj;
+    private bool readyToTeleport = true;
 
 
     private void Start()
@@ -116,10 +117,12 @@ public class CameraPointerManager : MonoBehaviour
 
     IEnumerator TeleportRoutine(Vector3 location)
     {
+        readyToTeleport = false;
         fadeScreen.FadeOut();
         yield return new WaitForSeconds(fadeScreen.fadeDuration);
         Teleport(location);
         fadeScreen.FadeIn();
+        readyToTeleport = true;
     }
 
     private void Teleport(Vector3 location)
@@ -128,7 +131,7 @@ public class CameraPointerManager : MonoBehaviour
                 transform.parent.gameObject.transform.position.y, location.z);
 
         transform.parent.gameObject.transform.eulerAngles = new Vector3(transform.parent.gameObject.transform.eulerAngles.x,
-            teleporter.transform.eulerAngles.y, transform.parent.gameObject.transform.eulerAngles.z);
+            teleporter.transform.eulerAngles.y + 90, transform.parent.gameObject.transform.eulerAngles.z);
 
     }
 
@@ -159,7 +162,7 @@ public class CameraPointerManager : MonoBehaviour
         {
             teleporter.transform.position = CalculatePointerPosition(transform.position, hitPoint, 1);
             ControlTeleportRotation();
-            if (Input.GetButtonDown("Fire1") && TeleportHandler.destinationValid)
+            if (Input.GetButtonDown("Fire1") && TeleportHandler.destinationValid && readyToTeleport)
             {
                 StartCoroutine(TeleportRoutine(hitPoint));
             }
