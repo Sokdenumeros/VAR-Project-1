@@ -54,7 +54,6 @@ public class CameraPointerManager : MonoBehaviour
                 pointerColor.a = 1f;
                 pointer.GetComponent<Renderer>().material.color = pointerColor;
             }
-            
             switch (hit.transform.tag)
             {
                 case interactableTag:
@@ -103,14 +102,16 @@ public class CameraPointerManager : MonoBehaviour
     {
         if (pointObject == pointer)
         {
-            teleporter.SetActive(false);
+            teleporter.GetComponent<Renderer>().enabled = false;
+            teleporter.transform.GetChild(0).GetComponent<Renderer>().enabled = false;
             pointer.SetActive(true);
             currentPointerObj = pointer;
         }
         if (pointObject == teleporter)
         {
             pointer.SetActive(false);
-            teleporter.SetActive(true);
+            teleporter.GetComponent<Renderer>().enabled = true;
+            teleporter.transform.GetChild(0).GetComponent<Renderer>().enabled = true;
             currentPointerObj = teleporter;
         }
     }
@@ -131,7 +132,7 @@ public class CameraPointerManager : MonoBehaviour
                 transform.parent.gameObject.transform.position.y, location.z);
 
         transform.parent.gameObject.transform.eulerAngles = new Vector3(transform.parent.gameObject.transform.eulerAngles.x,
-            teleporter.transform.eulerAngles.y + 90, transform.parent.gameObject.transform.eulerAngles.z);
+            teleporter.transform.eulerAngles.y, transform.parent.gameObject.transform.eulerAngles.z);
 
     }
 
@@ -141,7 +142,7 @@ public class CameraPointerManager : MonoBehaviour
 
         if (Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0)
         {
-            float joystickAngle = Mathf.Atan2(-(Input.GetAxis("Vertical")), Input.GetAxis("Horizontal")) * Mathf.Rad2Deg; ;
+            float joystickAngle = Mathf.Atan2(-(Input.GetAxis("Vertical")), Input.GetAxis("Horizontal")) * Mathf.Rad2Deg;
             teleporter.transform.eulerAngles = new Vector3(teleporter.transform.eulerAngles.x, (yRotation + joystickAngle + 90), teleporter.transform.eulerAngles.x);
         }
         else
