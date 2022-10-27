@@ -27,14 +27,14 @@ public class CameraPointerManager : MonoBehaviour
 
     private void Start()
     {
-        GazeManager.Instance.OnGazeSelection += GazeSelection;
+        //GazeManager.Instance.OnGazeSelection += GazeSelection;
         pointerColor = pointer.GetComponent<Renderer>().material.color;
     }
 
-    private void GazeSelection()
+    /*private void GazeSelection()
     {
         _gazedAtObject?.SendMessage("OnPointerClick", null, SendMessageOptions.DontRequireReceiver);
-    }
+    }*/
 
     public void Update()
     {
@@ -58,23 +58,23 @@ public class CameraPointerManager : MonoBehaviour
             {
                 case interactableTag:
                     SwitchPointerObject(pointer);
-                    GazeManager.Instance.StartGazeSelection();
+                    //GazeManager.Instance.StartGazeSelection();
                     pointer.GetComponent<Renderer>().material.color = Color.green;
                     if (Input.GetButtonDown("Fire1"))
                         hit.transform.gameObject.SendMessage("interaction", this, SendMessageOptions.DontRequireReceiver);
                     break;
                 case environmentTag:
                     SwitchPointerObject(pointer);
-                    GazeManager.Instance.CancelGazeSelection();
+                    //GazeManager.Instance.CancelGazeSelection();
                     pointer.GetComponent<Renderer>().material.color = Color.white;
                     break;
                 case floorTag:
                     SwitchPointerObject(teleporter);
-                    GazeManager.Instance.CancelGazeSelection();
+                    //GazeManager.Instance.CancelGazeSelection();
                     break;
                 default:
                     SwitchPointerObject(pointer);
-                    GazeManager.Instance.CancelGazeSelection();
+                    //GazeManager.Instance.CancelGazeSelection();
                     pointer.GetComponent<Renderer>().material.color = Color.white;
                     break;
             }

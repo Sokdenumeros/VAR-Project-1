@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class hoverBehaviour : MonoBehaviour
+public class HoverBehaviour : MonoBehaviour
 {
 
     private Material initialMat;
