@@ -6,10 +6,15 @@ public class Pickup : MonoBehaviour
 {
     private Vector3 relative_pos;
     private CameraPointerManager cam;
+    private Color initialColor;
+    private Color transparentColor;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        initialColor = GetComponent<Renderer>().material.color;
+        transparentColor = initialColor;
+        transparentColor.a = 0.4f;
     }
 
     // Update is called once per frame
@@ -26,9 +31,10 @@ public class Pickup : MonoBehaviour
 
     public void interaction(CameraPointerManager c) {
         if (cam != null) { 
-            drop(); 
+            drop();
             return;
         }
+        GetComponent<Renderer>().material.color = transparentColor;
         cam = c;
         Vector3 dif = transform.position - cam.transform.position;
         relative_pos.x = Vector3.Dot(dif, cam.transform.right.normalized);
@@ -37,6 +43,7 @@ public class Pickup : MonoBehaviour
     }
 
     private void drop() {
+        GetComponent<Renderer>().material.color = initialColor;
         cam = null;
     }
 }

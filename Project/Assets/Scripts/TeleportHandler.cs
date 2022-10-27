@@ -5,8 +5,6 @@ using UnityEngine;
 public class TeleportHandler : MonoBehaviour
 {
     public static bool destinationValid = true;
-    private readonly string interactableTag = "Interactable";
-    private readonly string environmentTag = "Environment";
     public static Color teleporterColor;
     public static Color glowColor;
     private Color redGlowColor;
