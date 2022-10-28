@@ -21,8 +21,14 @@ public class Pickup : MonoBehaviour
     void Update()
     {
         if (cam != null) {
-            Vector3 targetposition = cam.transform.position + cam.transform.right.normalized * relative_pos.x + cam.transform.up.normalized * relative_pos.y + cam.transform.forward.normalized * relative_pos.z;
-            this.GetComponent<Rigidbody>().velocity = (targetposition - transform.position)*10;
+            if (Input.GetButtonUp("Fire1"))
+            {
+                drop();
+            }
+            else {
+                Vector3 targetposition = cam.transform.position + cam.transform.right.normalized * relative_pos.x + cam.transform.up.normalized * relative_pos.y + cam.transform.forward.normalized * relative_pos.z;
+                this.GetComponent<Rigidbody>().velocity = (targetposition - transform.position) * 10;
+            }
             //transform.position = targetposition;
             //this.GetComponent<Rigidbody>().angularVelocity = (cam.transform.parent.transform.eulerAngles - (transform.eulerAngles*3/180)) * 10;
             //transform.Translate(position-transform.position);
