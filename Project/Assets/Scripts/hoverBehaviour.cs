@@ -19,13 +19,13 @@ public class HoverBehaviour : MonoBehaviour
         
     }
 
-    public void OnPointerEnter()
+    public void OnPointerEnterXR()
     {
         initialMat = new(GetComponent<Renderer>().material);
         GetComponent<Renderer>().material.color = initialMat.color*2;
     }
 
-    public void OnPointerExit()
+    public void OnPointerExitXR()
     {
          GetComponent<Renderer>().material = initialMat;
     }
