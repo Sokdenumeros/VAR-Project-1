@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraPointerManager : MonoBehaviour
 {
@@ -46,6 +47,15 @@ public class CameraPointerManager : MonoBehaviour
 
     public void Update()
     {
+        if (SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            readyToTeleport = false;
+        }
+        else
+        {
+            readyToTeleport = true;
+        }
+
         // Casts ray towards camera's forward direction, to detect if a GameObject is being gazed
         // at.
         RaycastHit hit;
@@ -69,15 +79,20 @@ public class CameraPointerManager : MonoBehaviour
                     SwitchPointerObject(pointer);
                     pointer.GetComponent<Renderer>().material.color = Color.green;
                     if (Input.GetButtonDown("Fire1"))
+                    {
                         hit.transform.gameObject.SendMessage("interaction", this, SendMessageOptions.DontRequireReceiver);
                         hit.transform.gameObject.SendMessage("OnPointerClickXR", this, SendMessageOptions.DontRequireReceiver);
+                    }
                     break;
                 case environmentTag:
                     SwitchPointerObject(pointer);
                     pointer.GetComponent<Renderer>().material.color = Color.white;
                     break;
                 case floorTag:
-                    SwitchPointerObject(teleporter);
+                    if (readyToTeleport)
+                    {
+                        SwitchPointerObject(teleporter);
+                    }
                     break;
                 default:
                     SwitchPointerObject(pointer);
