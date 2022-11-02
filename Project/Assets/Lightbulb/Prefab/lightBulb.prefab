@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 531928c393347b54facb2bf8886061fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light: {fileID: 0}
+  llum: {fileID: 0}
 --- !u!65 &1970839687384734585
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -272,7 +272,7 @@ Light:
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
-  m_Color: {r: 1, g: 0.7798717, b: 0.2971698, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 10
   m_Range: 1
   m_SpotAngle: 30

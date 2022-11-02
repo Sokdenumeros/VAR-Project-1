@@ -82,6 +82,7 @@ public class CameraPointerManager : MonoBehaviour
                     {
                         hit.transform.gameObject.SendMessage("interaction", this, SendMessageOptions.DontRequireReceiver);
                         hit.transform.gameObject.SendMessage("OnPointerClickXR", this, SendMessageOptions.DontRequireReceiver);
+                        hit.transform.gameObject.SendMessage("changeValue", hit.point, SendMessageOptions.DontRequireReceiver);
                     }
                     break;
                 case environmentTag:
