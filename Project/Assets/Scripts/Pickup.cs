@@ -22,16 +22,16 @@ public class Pickup : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetButtonUp("Fire2")) ax = (ax + 1) % 3;
         if (cam != null) {
-            if (Input.GetButtonUp("Fire2")) ax = (ax + 1) % 3;
             if (Input.GetButtonUp("Fire1"))
             {
                 drop();
             }
             else {
-                if (ax == 0) transform.Rotate(0, Input.GetAxis("Horizontal"), 0);
-                if (ax == 1) transform.Rotate(Input.GetAxis("Horizontal"), 0,0);
-                if (ax == 2) transform.Rotate(0,0, Input.GetAxis("Horizontal"));
+                if (ax == 0) transform.Rotate(0, Input.GetAxis("Horizontal")*Time.deltaTime * 100, 0);
+                if (ax == 1) transform.Rotate(Input.GetAxis("Horizontal") * Time.deltaTime * 100, 0,0);
+                if (ax == 2) transform.Rotate(0,0, Input.GetAxis("Horizontal") * Time.deltaTime*100);
 
                 relative_pos += relative_pos.normalized*(Input.GetAxisRaw("Vertical")*Time.deltaTime*8);
                 Vector3 targetposition = cam.transform.position + cam.transform.right.normalized * relative_pos.x + cam.transform.up.normalized * relative_pos.y + cam.transform.forward.normalized * relative_pos.z;
@@ -57,7 +57,6 @@ public class Pickup : MonoBehaviour
     }
 
     private void drop() {
-        ax = 0;
         GetComponent<Renderer>().material.color = initialColor;
         cam = null;
     }
