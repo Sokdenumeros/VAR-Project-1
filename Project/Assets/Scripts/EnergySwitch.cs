@@ -45,11 +45,13 @@ public class EnergySwitch : MonoBehaviour
         if (power)
         {
             power = false;
+            transform.Rotate(-7, 0, 0);
             GetComponent<Renderer>().material.color = Color.blue;
         }
         else
         {
             power = true;
+            transform.Rotate(7, 0, 0);
             GetComponent<Renderer>().material.color = Color.red;
             propagatePower();
         }
