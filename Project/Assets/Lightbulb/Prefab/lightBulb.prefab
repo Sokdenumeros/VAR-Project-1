@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 651062782762691917}
   - component: {fileID: -3335202733213953762}
   - component: {fileID: 1970839687384734585}
+  - component: {fileID: 1684715290227110856}
   m_Layer: 0
   m_Name: lightBulb
   m_TagString: Untagged
@@ -62,6 +63,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.25, y: 0.25, z: 0.25}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &1684715290227110856
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162932824385288183}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 0.15, z: 0.1}
+  m_Center: {x: 0, y: 0.03, z: 0}
 --- !u!1 &558103713344805578
 GameObject:
   m_ObjectHideFlags: 0

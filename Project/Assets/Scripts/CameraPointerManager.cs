@@ -21,6 +21,7 @@ public class CameraPointerManager : MonoBehaviour
     private const string interactableTag = "Interactable";
     private const string environmentTag = "Environment";
     private const string floorTag = "Floor";
+    private const string sliderTag = "Slider";
     private float scaleSize = 0.025f;
     private Color pointerColor;
     private GameObject currentPointerObj;
@@ -82,8 +83,10 @@ public class CameraPointerManager : MonoBehaviour
                     {
                         hit.transform.gameObject.SendMessage("interaction", this, SendMessageOptions.DontRequireReceiver);
                         hit.transform.gameObject.SendMessage("OnPointerClickXR", this, SendMessageOptions.DontRequireReceiver);
-                        hit.transform.gameObject.SendMessage("changeValue", hit.point, SendMessageOptions.DontRequireReceiver);
                     }
+                    break;
+                case sliderTag:
+                    if (Input.GetButton("Fire1")) hit.transform.gameObject.SendMessage("changeValue", hit.point, SendMessageOptions.DontRequireReceiver);
                     break;
                 case environmentTag:
                     SwitchPointerObject(pointer);

@@ -8,6 +8,7 @@ TagManager:
   - Environment
   - Floor
   - PickUp
+  - Slider
   layers:
   - Default
   - TransparentFX
