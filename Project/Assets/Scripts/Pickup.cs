@@ -8,10 +8,12 @@ public class Pickup : MonoBehaviour
     private CameraPointerManager cam;
     private Color initialColor;
     private Color transparentColor;
+    private int ax;
 
     // Start is called before the first frame update
     void Start()
     {
+        ax = 0;
         initialColor = GetComponent<Renderer>().material.color;
         transparentColor = initialColor;
         transparentColor.a = 0.4f;
@@ -21,11 +23,17 @@ public class Pickup : MonoBehaviour
     void Update()
     {
         if (cam != null) {
+            if (Input.GetButtonUp("Fire2")) ax = (ax + 1) % 3;
             if (Input.GetButtonUp("Fire1"))
             {
                 drop();
             }
             else {
+                if (ax == 0) transform.Rotate(0, Input.GetAxis("Horizontal"), 0);
+                if (ax == 1) transform.Rotate(Input.GetAxis("Horizontal"), 0,0);
+                if (ax == 2) transform.Rotate(0,0, Input.GetAxis("Horizontal"));
+
+                relative_pos += relative_pos.normalized*(Input.GetAxisRaw("Vertical")*Time.deltaTime*8);
                 Vector3 targetposition = cam.transform.position + cam.transform.right.normalized * relative_pos.x + cam.transform.up.normalized * relative_pos.y + cam.transform.forward.normalized * relative_pos.z;
                 this.GetComponent<Rigidbody>().velocity = (targetposition - transform.position) * 10;
             }
@@ -49,6 +57,7 @@ public class Pickup : MonoBehaviour
     }
 
     private void drop() {
+        ax = 0;
         GetComponent<Renderer>().material.color = initialColor;
         cam = null;
     }
