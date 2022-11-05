@@ -5,8 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    public void Play()
+    public FadeScreen fadeScreen;
+
+    void Play()
     {
+        StartCoroutine(PlayRoutine());
+    }
+
+    IEnumerator PlayRoutine()
+    {
+        fadeScreen.FadeOut();
+        yield return new WaitForSeconds(fadeScreen.fadeDuration);
         SceneManager.LoadScene(1);
+        CameraPointerManager.paused = false;
     }
 }

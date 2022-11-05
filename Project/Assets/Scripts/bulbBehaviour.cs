@@ -21,6 +21,6 @@ public class bulbBehaviour : MonoBehaviour
 
     private void GivePower()
     {
-        llum.intensity = 10;
+        llum.intensity = 1.5f;
     }
 }

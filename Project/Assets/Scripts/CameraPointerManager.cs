@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEditor.FilePathAttribute;
 
 public class CameraPointerManager : MonoBehaviour
 {
     public static CameraPointerManager Instance;
     [SerializeField] private GameObject pointer;
     [SerializeField] private GameObject teleporter;
+    [SerializeField] private GameObject pausePosition;
     [SerializeField] private float maxDistancePointer = 4.5f;
     [Range(0,1)]
     [SerializeField] private float distancePointerToObject = 0.95f;
@@ -26,8 +28,10 @@ public class CameraPointerManager : MonoBehaviour
     private Color pointerColor;
     private GameObject currentPointerObj;
     private bool readyToTeleport = true;
+    public static Vector3 oldPosition;
     [HideInInspector]
     public Vector3 hitPoint;
+    public static bool paused;
 
     private void Awake()
     {
@@ -51,10 +55,24 @@ public class CameraPointerManager : MonoBehaviour
         if (SceneManager.GetActiveScene().name == "MainMenu")
         {
             readyToTeleport = false;
+            paused = true;
         }
-        else
+        if (SceneManager.GetActiveScene().name == "Level")
         {
-            readyToTeleport = true;
+            if (!paused)
+            {
+                readyToTeleport = true;
+            }
+            else
+            {
+                readyToTeleport = false;
+            }
+        }
+
+        // Pause
+        if(Input.GetButtonDown("Fire3") && !paused)
+        {
+            StartCoroutine(PauseRoutine());
         }
 
         // Casts ray towards camera's forward direction, to detect if a GameObject is being gazed
@@ -156,8 +174,8 @@ public class CameraPointerManager : MonoBehaviour
         transform.parent.gameObject.transform.position = new Vector3(location.x,
                 transform.parent.gameObject.transform.position.y, location.z);
 
-        transform.parent.gameObject.transform.eulerAngles = new Vector3(transform.parent.gameObject.transform.eulerAngles.x,
-            teleporter.transform.eulerAngles.y, transform.parent.gameObject.transform.eulerAngles.z);
+        gameObject.transform.eulerAngles = new Vector3(gameObject.transform.eulerAngles.x,
+            teleporter.transform.eulerAngles.y, gameObject.transform.eulerAngles.z);
 
     }
 
@@ -216,5 +234,17 @@ public class CameraPointerManager : MonoBehaviour
         float z = p0.z + t * (p1.z - p0.z);
 
         return new Vector3(x, y, z);
+    }
+
+
+    IEnumerator PauseRoutine()
+    {
+        fadeScreen.FadeOut();
+        yield return new WaitForSeconds(fadeScreen.fadeDuration);
+        oldPosition = transform.parent.gameObject.transform.position;
+        transform.parent.gameObject.transform.position = new Vector3(pausePosition.transform.position.x,
+            pausePosition.transform.position.y, pausePosition.transform.position.z);
+        paused = true;
+        fadeScreen.FadeIn();
     }
 }

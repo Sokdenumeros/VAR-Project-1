@@ -8,6 +8,7 @@ public class Pickup : MonoBehaviour
     private CameraPointerManager cam;
     private Color initialColor;
     private Color transparentColor;
+    public static Color currentColor;
     private int ax;
 
     // Start is called before the first frame update
@@ -16,6 +17,7 @@ public class Pickup : MonoBehaviour
         ax = 0;
         initialColor = GetComponent<Renderer>().material.color;
         transparentColor = initialColor;
+        currentColor = initialColor;
         transparentColor.a = 0.4f;
     }
 
@@ -49,6 +51,7 @@ public class Pickup : MonoBehaviour
             return;
         }
         GetComponent<Renderer>().material.color = transparentColor;
+        currentColor = transparentColor;
         cam = c;
         Vector3 dif = transform.position - cam.transform.position;
         relative_pos.x = Vector3.Dot(dif, cam.transform.right.normalized);
@@ -58,6 +61,7 @@ public class Pickup : MonoBehaviour
 
     private void drop() {
         GetComponent<Renderer>().material.color = initialColor;
+        transparentColor = initialColor;
         cam = null;
     }
 }
