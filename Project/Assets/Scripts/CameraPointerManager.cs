@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static UnityEditor.FilePathAttribute;
 
 public class CameraPointerManager : MonoBehaviour
 {
@@ -32,6 +31,7 @@ public class CameraPointerManager : MonoBehaviour
     [HideInInspector]
     public Vector3 hitPoint;
     public static bool paused;
+    public static bool currentPickup;
 
     private void Awake()
     {
@@ -48,6 +48,7 @@ public class CameraPointerManager : MonoBehaviour
     private void Start()
     {
         pointerColor = pointer.GetComponent<Renderer>().material.color;
+        currentPickup = false;
     }
 
     public void Update()
@@ -150,7 +151,7 @@ public class CameraPointerManager : MonoBehaviour
             pointer.SetActive(true);
             currentPointerObj = pointer;
         }
-        if (pointObject == teleporter)
+        if (pointObject == teleporter && !currentPickup)
         {
             pointer.SetActive(false);
             teleporter.GetComponent<Renderer>().enabled = true;
@@ -202,7 +203,7 @@ public class CameraPointerManager : MonoBehaviour
             pointer.transform.localScale = Vector3.one * scale;
             pointer.transform.parent.position = CalculatePointerPosition(transform.position, hitPoint, distancePointerToObject);
         }
-        if (currentPointerObj == teleporter)
+        if (currentPointerObj == teleporter && !currentPickup)
         {
             teleporter.transform.position = CalculatePointerPosition(transform.position, hitPoint, 1);
             ControlTeleportRotation();

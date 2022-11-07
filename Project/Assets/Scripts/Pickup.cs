@@ -57,11 +57,13 @@ public class Pickup : MonoBehaviour
         relative_pos.x = Vector3.Dot(dif, cam.transform.right.normalized);
         relative_pos.y = Vector3.Dot(dif, cam.transform.up.normalized);
         relative_pos.z = Vector3.Dot(dif, cam.transform.forward.normalized);
+        CameraPointerManager.currentPickup = true;
     }
 
     private void drop() {
         GetComponent<Renderer>().material.color = initialColor;
         transparentColor = initialColor;
         cam = null;
+        CameraPointerManager.currentPickup = false;
     }
 }
