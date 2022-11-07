@@ -7,15 +7,17 @@ public class EnergyConnector : MonoBehaviour
     List<GameObject> currentCollisions = new List<GameObject>();
     bool power;
     public Material emission;
+    public Material initial;
     // Start is called before the first frame update
     void Start()
     {
         power = false;
+        initial = GetComponent<Renderer>().material;
     }
 
     void Update() {
         power = false;
-        GetComponent<Renderer>().material.color = Pickup.currentColor;
+        GetComponent<Renderer>().material = initial;
     }
 
     void OnTriggerEnter(Collider col)
