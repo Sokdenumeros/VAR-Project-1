@@ -134,12 +134,6 @@ public class CameraPointerManager : MonoBehaviour
             pointerColor.a = 0.1f;
             pointer.GetComponent<Renderer>().material.color = pointerColor;
         }
-
-        // Checks for screen touches.
-        if (Google.XR.Cardboard.Api.IsTriggerPressed)
-        {
-            _gazedAtObject?.SendMessage("OnPointerClickXR", null, SendMessageOptions.DontRequireReceiver);
-        }
     }
 
     private void SwitchPointerObject(GameObject pointObject)
